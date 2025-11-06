@@ -6,14 +6,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart'; //for BackgroundIsolateBinaryMessenger
 import 'package:flutter/scheduler.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 
 late List<CameraDescription> _cameras;
 final GlobalKey<_CameraScreenState> cameraScreenKey = GlobalKey<_CameraScreenState>();
+late Interpreter interpreter;
 
 void main() async
 {
   WidgetsFlutterBinding.ensureInitialized();
   _cameras = await availableCameras();
+  interpreter = await Interpreter.fromAsset('assets/testmodel.tflite');
   runApp(const BrickBinder());
 }
 
@@ -48,6 +51,14 @@ Future<String> saveImageFileInIsolate(IsolateData data) async
   await File(data.tempPath).delete();
   return newPath;
 }
+
+// static List<dynamic> imagePreprocess(File imageFile) {
+// resize image
+
+// normalize
+
+// return the preprocessed image
+// }
 
 class BrickBinder extends StatelessWidget 
 {
