@@ -57,6 +57,7 @@ class OtherPage extends StatelessWidget {
           )]
         ),
       body: GridView.count(
+        childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 2),
         crossAxisCount: 2,
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
