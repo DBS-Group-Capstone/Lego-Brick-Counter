@@ -9,7 +9,7 @@
       "stopAtEntry": false,
       "externalConsole": true,
       "cwd": "c:/Users/res05/Documents/GitHub/Lego-Brick-Counter",
-      "program": "c:/Users/res05/Documents/GitHub/Lego-Brick-Counter/build/Debug/outDebug",
+      "program": "c:/Users/res05/Documents/GitHub/Lego-Brick-Counter",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
