@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'brick.dart';
 import 'database_helper.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class DataPage extends StatefulWidget {
+  const DataPage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _DataPageState createState() => _DataPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _DataPageState extends State<DataPage> {
   List<Brick> bricks = [];
 
   final colorController = TextEditingController();

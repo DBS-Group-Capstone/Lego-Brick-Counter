@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'data_page.dart';
 import 'dart:io';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -12,7 +12,7 @@ void main() async{
   }
 
   runApp(MaterialApp(
-    home: HomePage(),
+    home: DataPage(),
     debugShowCheckedModeBanner: false,
   ));
 }
