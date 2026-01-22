@@ -68,14 +68,16 @@ class CollectionPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30.0)
               )
             ),
-            onPressed: () {Navigator.of(context).pushNamed('/mypieces');},
+            // This was formerly /collection with the button named My Pieces;
+            //   will keep the file and we can decide later how to organize
+            onPressed: () {Navigator.of(context).pushNamed('/data');},
             child: Column(
               children: [
                 Spacer(),
                 Icon(Icons.shelves, size: 120),
                 Spacer(),
                 Text(
-                  "My Pieces",
+                  "Inventory",
                   style: TextStyle(
                     fontSize: 20
                   )

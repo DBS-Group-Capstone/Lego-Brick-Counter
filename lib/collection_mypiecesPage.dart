@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// Page /collection currently not used in lieu of /data
+
 class MypiecesPage extends StatefulWidget {
   const MypiecesPage({super.key});
 
