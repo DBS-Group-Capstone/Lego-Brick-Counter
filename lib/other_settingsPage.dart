@@ -9,6 +9,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool darkMode = false;
+  bool notifications = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,15 +25,55 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Settings"),
       ),
-      body: Center(
-        child: Text(
-          '(To be implemented)',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 30
-          )
-        )
-      )
+      body: ListView(
+        children: [
+          const SizedBox(height: 10),
+
+          // Appearance section
+          _sectionHeader("Appearance"),
+          SwitchListTile(
+            title: Text("Dark Mode"),
+            subtitle: const Text("ye"),
+            value: darkMode,
+            onChanged: (value) {
+              setState(() {
+                darkMode = value;
+              });
+            },
+            secondary: const Icon(Icons.dark_mode),
+          ),
+
+          const Divider(),
+
+          // Notifications section
+          _sectionHeader("Notifications"),
+          SwitchListTile(
+            title: Text("Enable Notifications"),
+            subtitle: const Text("Receive notifications for updates"),
+            value: notifications,
+            onChanged: (value) {
+              setState(() {
+                notifications = value;
+              });
+            },
+            secondary: const Icon(Icons.notifications),
+          ),
+        ],
+      ),
     );
   }
+}
+
+Widget _sectionHeader(String title) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    child: Text(
+      title,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.grey,
+      ),
+    ),
+  );
 }
