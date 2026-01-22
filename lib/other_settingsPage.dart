@@ -33,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
           _sectionHeader("Appearance"),
           SwitchListTile(
             title: Text("Dark Mode"),
-            subtitle: const Text("ye"),
+            subtitle: const Text("Enable dark theme for the app"),
             value: darkMode,
             onChanged: (value) {
               setState(() {
