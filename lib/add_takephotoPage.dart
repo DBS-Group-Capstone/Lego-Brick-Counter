@@ -58,10 +58,15 @@ class _TakephotoPageState extends State<TakephotoPage> {
         ? CameraPreview(controller)
         : const CircularProgressIndicator(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            //capture photo and return to previous page
-            controller.takePicture().then((XFile file) {
-              Navigator.of(context).pop(file);
+          onPressed: () async {
+            // Capture photo and go to checkimage page
+            // Async and preview stuff is to prevent a bug which overflows the image buffer;
+            //   pages are not destroyed until popped so going to another page leaves
+            //   the camera on. If you dispose() it, you can't rebuild it. 
+            controller.takePicture().then((XFile file) async {
+              controller.pausePreview();
+              await Navigator.of(context).pushNamed('/checkimage', arguments: file);
+              controller.resumePreview();
             });
           }
         ),
