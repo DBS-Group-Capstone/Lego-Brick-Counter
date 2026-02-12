@@ -24,9 +24,9 @@ class _AboutPageState extends State<AboutPage> {
       ),
       body: Center(
         child: Text(
-          '(To be implemented)',
+          'Lego Brick Counter is an objcet detection system that identifies and logs Lego bricks from images.\nThis project started development in 2025 by a group of students.',
           style: TextStyle(
-            color: Colors.red,
+            //color: Colors.red,
             fontSize: 30
           )
         )
