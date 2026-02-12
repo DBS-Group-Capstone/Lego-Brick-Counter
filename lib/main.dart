@@ -16,16 +16,31 @@ import 'package:learn/other_settingsPage.dart';
 import 'data_page.dart';
 import 'dart:io';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:learn/camera_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:learn/takephoto_checkimagePage.dart';
+import 'package:learn/uploadphoto_viewimagePage.dart';
 
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
+  //load cameras before app starts
+  final cameraProvider = CameraProvider();
+  await cameraProvider.loadCameras();
+
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-  runApp(const MyApp());
+
+  //provider used to manage camera state
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => cameraProvider,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -56,7 +71,9 @@ class MyApp extends StatelessWidget {
         '/help' : (_) => HelpPage(),
         '/legal' : (_) => LegalPage(),
         '/settings' : (_) => SettingsPage(),
-        '/data' : (_) => DataPage()
+        '/data' : (_) => DataPage(),
+        '/checkimage' : (_) => CheckimagePage(),
+        '/viewimage' : (_) => ViewimagePage()
       }
     );
   }
