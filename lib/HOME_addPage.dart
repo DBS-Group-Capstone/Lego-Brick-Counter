@@ -96,7 +96,7 @@ class AddPage extends StatelessWidget {
                 Icon(Icons.add_photo_alternate, size: 120),
                 Spacer(),
                 Text(
-                  "Upload",
+                  "Images",
                   style: TextStyle(
                     fontSize: 20
                   )

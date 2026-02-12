@@ -36,11 +36,15 @@ class _CheckimagePageState extends State<CheckimagePage> {
         centerTitle: true,
         actions: <Widget> [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               // Save the file and return to camera
-              var dir = getApplicationDocumentsDirectory();
+              var dir = await getApplicationDocumentsDirectory();
               String name = '${DateFormat('yyyyMMdd_hhmmss').format(DateTime.now())}.png';
-              arg.saveTo('$dir/$name');
+              var fulldir = Directory('${dir.path}/images');
+              if(! await fulldir.exists()) {
+                fulldir.create();
+              }
+              arg.saveTo(('${fulldir.path}/$name'));
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.check)
