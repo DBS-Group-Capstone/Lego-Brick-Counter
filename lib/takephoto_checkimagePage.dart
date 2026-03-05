@@ -48,6 +48,23 @@ class _CheckimagePageState extends State<CheckimagePage> {
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.check)
+          ),
+          IconButton(
+            onPressed: ()  async {
+              // Save the file and go to analysis
+              var dir = await getApplicationDocumentsDirectory();
+              String name = '${DateFormat('yyyyMMdd_hhmmss').format(DateTime.now())}.png';
+              var fulldir = Directory('${dir.path}/images');
+              if(! await fulldir.exists()) {
+                fulldir.create();
+              }
+              arg.saveTo(('${fulldir.path}/$name'));
+              var im = File('${fulldir.path}/$name');
+              
+              await Navigator.of(context).pushNamed('/analyze', arguments:im);
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.remove_red_eye)
           )
         ]
       ),

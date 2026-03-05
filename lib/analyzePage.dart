@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 
-class AboutPage extends StatefulWidget {
-  const AboutPage({super.key});
+
+class AnalyzePage extends StatefulWidget {
+  const AnalyzePage({super.key});
 
 
   @override
-  State<AboutPage> createState() => _AboutPageState();
+  State<AnalyzePage> createState() => _AnalyzePageState();
 }
 
-class _AboutPageState extends State<AboutPage> {
+class _AnalyzePageState extends State<AnalyzePage> {
   @override
   Widget build(BuildContext context) {
+    final arg = ModalRoute.of(context)?.settings.arguments as File;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -20,13 +23,13 @@ class _AboutPageState extends State<AboutPage> {
           icon: Icon(Icons.arrow_back)
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("About"),
+        title: Text("Ai analysis"),
       ),
       body: Center(
         child: Text(
-          'Lego Brick Counter is an objcet detection system that identifies and logs Lego bricks from images.\nThis project started development in 2025 by a group of students.',
+          '(To be implemented)',
           style: TextStyle(
-            //color: Colors.red,
+            color: Colors.red,
             fontSize: 30
           )
         )
