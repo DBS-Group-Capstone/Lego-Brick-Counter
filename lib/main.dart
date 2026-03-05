@@ -20,6 +20,7 @@ import 'package:learn/camera_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:learn/takephoto_checkimagePage.dart';
 import 'package:learn/uploadphoto_viewimagePage.dart';
+import 'package:learn/analyzePage.dart';
 
 
 void main() async{
@@ -73,7 +74,8 @@ class MyApp extends StatelessWidget {
         '/settings' : (_) => SettingsPage(),
         '/data' : (_) => DataPage(),
         '/checkimage' : (_) => CheckimagePage(),
-        '/viewimage' : (_) => ViewimagePage()
+        '/viewimage' : (_) => ViewimagePage(),
+        '/analyze' : (_) => AnalyzePage(),
       }
     );
   }

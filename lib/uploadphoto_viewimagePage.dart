@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cross_file/cross_file.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:cross_file/cross_file.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:intl/intl.dart';
-import 'package:cross_file_image/cross_file_image.dart';
+// import 'package:intl/intl.dart';
+// import 'package:cross_file_image/cross_file_image.dart';
 import 'package:path/path.dart';
 
 
@@ -43,8 +43,14 @@ class _ViewimagePageState extends State<ViewimagePage> {
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.delete_forever)
+          ),
+          IconButton(
+            onPressed: ()  {
+              Navigator.of(context).pushNamed('/analyze', arguments:arg);
+            },
+            icon: Icon(Icons.remove_red_eye)
           )
-        ]
+        ],
       ),
       body: Center(
         child: Image.file(
