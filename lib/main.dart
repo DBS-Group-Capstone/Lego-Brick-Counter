@@ -13,6 +13,10 @@ import 'package:learn/other_aboutPage.dart';
 import 'package:learn/other_helpPage.dart';
 import 'package:learn/other_legalPage.dart';
 import 'package:learn/other_settingsPage.dart';
+import 'package:learn/theme_provider.dart';
+import 'package:learn/dark_theme.dart';
+import 'package:learn/light_theme.dart';
+
 import 'data_page.dart';
 import 'dart:io';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -37,10 +41,13 @@ void main() async{
 
   //provider used to manage camera state
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => cameraProvider,
-      child: const MyApp(),
-    ),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => cameraProvider),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: const MyApp()
+    )
   );
 }
 
@@ -49,35 +56,39 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'Flutter Demo',
 
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 13, 207, 255)),
-      ),
-      home: const CollectionPage(),
-      routes: {
-        '/collection' : (_) => CollectionPage(),
-        '/add' : (_) => AddPage(),
-        '/other' : (_) => OtherPage(),
+          theme: AppLightTheme.theme,
+          darkTheme: AppDarkTheme.theme,
+          themeMode: themeProvider.themeMode,
 
-        '/addset' : (_) => AddsetPage(),
-        '/takephoto' : (_) => TakephotoPage(),
-        '/uploadphoto' : (_) => UploadphotoPage(),
-        '/piecelookup' : (_) => PiecelookupPage(),
-        '/mypieces' : (_) => MypiecesPage(),
-        '/setlookup' : (_) => SetlookupPage(),
-        '/setmatching' : (_) => SetmatchingPage(),
-        '/about' : (_) => AboutPage(),
-        '/help' : (_) => HelpPage(),
-        '/legal' : (_) => LegalPage(),
-        '/settings' : (_) => SettingsPage(),
-        '/data' : (_) => DataPage(),
-        '/checkimage' : (_) => CheckimagePage(),
-        '/viewimage' : (_) => ViewimagePage(),
-        '/analyze' : (_) => AnalyzePage(),
+          home: const CollectionPage(),
+          routes: {
+          '/collection' : (_) => CollectionPage(),
+          '/add' : (_) => AddPage(),
+          '/other' : (_) => OtherPage(),
+
+          '/addset' : (_) => AddsetPage(),
+          '/takephoto' : (_) => TakephotoPage(),
+          '/uploadphoto' : (_) => UploadphotoPage(),
+          '/piecelookup' : (_) => PiecelookupPage(),
+          '/mypieces' : (_) => MypiecesPage(),
+          '/setlookup' : (_) => SetlookupPage(),
+          '/setmatching' : (_) => SetmatchingPage(),
+          '/about' : (_) => AboutPage(),
+          '/help' : (_) => HelpPage(),
+          '/legal' : (_) => LegalPage(),
+          '/settings' : (_) => SettingsPage(),
+          '/data' : (_) => DataPage(),
+          '/checkimage' : (_) => CheckimagePage(),
+          '/viewimage' : (_) => ViewimagePage(),
+          '/analyze' : (_) => AnalyzePage(),
+          }
+        );
       }
     );
   }
 }
-
