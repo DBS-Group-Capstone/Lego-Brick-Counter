@@ -123,14 +123,18 @@ class _PiecelookupPageState extends State<PiecelookupPage> {
                                 brick.quantity -= 1;
                                 if (brick.quantity < 0) brick.quantity = 0;
                                 DatabaseHelper.instance.updateBrick(brick);
+                                loadBricks();
                               }),
                               IconButton(icon: Icon(Icons.add), onPressed: () {
                                 brick.quantity += 1;
                                 DatabaseHelper.instance.updateBrick(brick);
+                                loadBricks();
                               }),
                               IconButton(icon: Icon(Icons.delete, color: Colors.red), onPressed: () {
-                                brick.quantity == 0;
-                                DatabaseHelper.instance.updateBrick(brick);
+                                // The ID is a primary key, it should NEVER be null, but who knows what
+                                //   logical errors lurk from when it was copied from the db?
+                                if(brick.id != null) DatabaseHelper.instance.deleteBrick(brick.id!);
+                                loadBricks();
                               }),
                             ],
                           ),
