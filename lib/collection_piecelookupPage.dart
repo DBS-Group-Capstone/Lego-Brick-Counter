@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:learn/database_helper.dart';
+import 'package:learn/brick.dart';
 
 class PiecelookupPage extends StatefulWidget {
   const PiecelookupPage({super.key});
@@ -8,7 +10,48 @@ class PiecelookupPage extends StatefulWidget {
   State<PiecelookupPage> createState() => _PiecelookupPageState();
 }
 
+
 class _PiecelookupPageState extends State<PiecelookupPage> {
+  List<Brick> bricks = [];
+  String colorf = "";
+  String typef = "";
+  String sizef = "";
+  bool loading = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    loadBricks();
+  }
+
+  // Get our bricks and order them based on count
+  Future<void> loadBricks() async {
+    setState(() => loading = true);
+    bricks = await DatabaseHelper.instance.getBricks();
+    bricks.sort((a, b) {
+      if(a.quantity > b.quantity) {
+        return -1;
+      } else if(a.quantity == b.quantity) {
+        return 0;}
+      else {
+        return 1;}
+    });
+
+    setState(() => loading = false);
+  }
+
+  // Updates our filtering
+  Future<void> addFilter(String value, String attribute) async {
+    setState(() => loading = true);
+    if(attribute == "color") colorf = value;
+    if(attribute == "type") typef = value;
+    if(attribute == "size") sizef = value;
+
+    setState(() => loading = false);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,12 +66,88 @@ class _PiecelookupPageState extends State<PiecelookupPage> {
         title: Text("Piece Lookup"),
       ),
       body: Center(
-        child: Text(
-          '(To be implemented)',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 30
-          )
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Color",
+                border:OutlineInputBorder(),
+              ),
+              onChanged: (String value) {
+                addFilter(value, "color"); 
+              }
+            ),
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Type",
+                border:OutlineInputBorder(),
+              ),
+              onChanged: (String value) {
+                addFilter(value, "type"); 
+              }
+            ),
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Size",
+                border:OutlineInputBorder(),
+              ),
+              onChanged: (String value) {
+                addFilter(value, "size"); 
+              }
+            ),
+            if(loading) 
+              CircularProgressIndicator()
+            else
+              Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: bricks.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var brick = bricks[index];
+                    if((brick.color == colorf || colorf == "")
+                      && (brick.type == typef || typef == "")
+                      && (brick.size == sizef || sizef == "")
+                      && brick.quantity > 0) {
+                      return Card(
+                        child: ListTile(
+                          // TODO: This leading: icon is a placeholder.
+                          //   This should be replaced by an image of the piece once we
+                          //   have our final piece list
+                          leading: Icon(Icons.square),
+                          title: Text("${brick.color} - ${brick.type} (${brick.size})"),
+                          subtitle: Text("Quantity: ${brick.quantity}"),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(icon: Icon(Icons.remove), onPressed: () {
+                                brick.quantity -= 1;
+                                if (brick.quantity < 0) brick.quantity = 0;
+                                DatabaseHelper.instance.updateBrick(brick);
+                              }),
+                              IconButton(icon: Icon(Icons.add), onPressed: () {
+                                brick.quantity += 1;
+                                DatabaseHelper.instance.updateBrick(brick);
+                              }),
+                              IconButton(icon: Icon(Icons.delete, color: Colors.red), onPressed: () {
+                                brick.quantity == 0;
+                                DatabaseHelper.instance.updateBrick(brick);
+                              }),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    else {
+                      return SizedBox(
+                      height: 0,
+                      width: 0,
+                      );
+                    }
+                  }
+                )
+              )
+          ]
         )
       )
     );
