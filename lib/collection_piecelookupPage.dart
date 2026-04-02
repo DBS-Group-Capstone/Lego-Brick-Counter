@@ -104,9 +104,29 @@ class _PiecelookupPageState extends State<PiecelookupPage> {
                   itemCount: bricks.length,
                   itemBuilder: (BuildContext context, int index) {
                     var brick = bricks[index];
-                    if((brick.color.toUpperCase() == colorf || colorf == "")
-                      && (brick.type.toUpperCase() == typef || typef == "")
-                      && (brick.size.toUpperCase() == sizef || sizef == "")
+                    String c = "";
+                    String t = "";
+                    String s = "";
+
+                    if(brick.color.length > colorf.length) {
+                      c = brick.color.toUpperCase().substring(0, colorf.length);
+                    } else {
+                      c = brick.color.toUpperCase();
+                    }
+                    if(brick.type.length > typef.length) {
+                      t = brick.type.toUpperCase().substring(0, typef.length);
+                    } else {
+                      t = brick.type.toUpperCase();
+                    }
+                    if(brick.size.length > sizef.length) {
+                      s = brick.size.toUpperCase().substring(0, sizef.length);
+                    } else {
+                      s = brick.size.toUpperCase();
+                    }
+
+                    if((c == colorf || colorf == "")
+                      && (t == typef || typef == "")
+                      && (s == sizef || sizef == "")
                       && brick.quantity > 0) {
                       return Card(
                         child: ListTile(
