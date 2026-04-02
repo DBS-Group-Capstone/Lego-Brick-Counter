@@ -44,13 +44,12 @@ class _PiecelookupPageState extends State<PiecelookupPage> {
   // Updates our filtering
   Future<void> addFilter(String value, String attribute) async {
     setState(() => loading = true);
-    if(attribute == "color") colorf = value;
-    if(attribute == "type") typef = value;
-    if(attribute == "size") sizef = value;
+    if(attribute == "color") colorf = value.toUpperCase();
+    if(attribute == "type") typef = value.toUpperCase();
+    if(attribute == "size") sizef = value.toUpperCase();
 
     setState(() => loading = false);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +104,9 @@ class _PiecelookupPageState extends State<PiecelookupPage> {
                   itemCount: bricks.length,
                   itemBuilder: (BuildContext context, int index) {
                     var brick = bricks[index];
-                    if((brick.color == colorf || colorf == "")
-                      && (brick.type == typef || typef == "")
-                      && (brick.size == sizef || sizef == "")
+                    if((brick.color.toUpperCase() == colorf || colorf == "")
+                      && (brick.type.toUpperCase() == typef || typef == "")
+                      && (brick.size.toUpperCase() == sizef || sizef == "")
                       && brick.quantity > 0) {
                       return Card(
                         child: ListTile(
@@ -138,6 +137,7 @@ class _PiecelookupPageState extends State<PiecelookupPage> {
                         ),
                       );
                     }
+                    // Empty, 0x0 box
                     else {
                       return SizedBox(
                       height: 0,
