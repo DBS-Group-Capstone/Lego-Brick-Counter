@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:learn/imagefile_helpers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
@@ -44,7 +45,10 @@ class _CheckimagePageState extends State<CheckimagePage> {
               if(! await fulldir.exists()) {
                 fulldir.create();
               }
-              arg.saveTo(('${fulldir.path}/$name'));
+              var argpng = await verifyPng(arg);
+              if (argpng != null) {
+                argpng.saveTo(('${fulldir.path}/$name'));
+              }
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.check)
@@ -58,7 +62,10 @@ class _CheckimagePageState extends State<CheckimagePage> {
               if(! await fulldir.exists()) {
                 fulldir.create();
               }
-              arg.saveTo(('${fulldir.path}/$name'));
+              var argpng = await verifyPng(arg);
+              if (argpng != null) {
+                argpng.saveTo(('${fulldir.path}/$name'));
+              }
               var im = File('${fulldir.path}/$name');
               
               await Navigator.of(context).pushNamed('/analyze', arguments:im);

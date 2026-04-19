@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learn/imagefile_helpers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -66,7 +67,13 @@ class _UploadphotoPageState extends State<UploadphotoPage> {
                   }
                   if(im != null) {
                     fileLoc = File('${fulldir.path}/$name');
-                    im.saveTo(fileLoc.path);
+                    var argpng = await verifyPng(im);
+                    if (argpng != null) {
+                      argpng.saveTo(fileLoc.path);
+                    }
+                    else {
+                      throw FormatException("Bad png conversion");
+                    }
                     m = "Image $name added.";
                   }
                   else {
