@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -7,7 +9,46 @@ import 'package:image/image.dart' as imaging;
 
 // To use detect then classify, set this to "two-model"
 // To use detect-only (for models that do both) set this to "one-model"
-const String aiParadigm = "two-model";
+const String aiParadigm = "one-model";
+
+class BoxCoordinates {
+  int left;
+  int right;
+  int top;
+  int bottom;
+  BoxCoordinates(this.left, this.right, this.top, this.bottom);
+}
+
+class BoxPiece {
+  String className;
+  BoxCoordinates coords;
+  BoxPiece(this.className, this.coords);
+}
+
+// Draws red boxes upon an image
+Future <Uint8List?> applyBoxesToImage(File base, List<BoxCoordinates> co) async {
+  var newImg = imaging.decodeImage(await base.readAsBytes());
+
+  if(newImg != null) {
+    // Draw a rectangle for each BoxCoordinates object
+    for (var cos in co) {
+      imaging.drawRect(
+        newImg, 
+        x1: cos.left, 
+        y1: cos.top, 
+        x2: cos.right, 
+        y2: cos.bottom, 
+        color: imaging.ColorUint8.rgba(255, 0, 0, 255),
+        thickness: 9
+      );
+    }
+    return imaging.encodePng(newImg);
+  }
+  else {
+    // Empty image
+    return null;
+  }
+}
 
 class AnalyzePage extends StatefulWidget {
   const AnalyzePage({super.key});
@@ -18,10 +59,11 @@ class AnalyzePage extends StatefulWidget {
 
 class _AnalyzePageState extends State<AnalyzePage> {
   YOLO? yolo;
-  List<String> results = [];
+  List<BoxPiece> results = [];
   bool loading = false;
   bool empty = true;
-  late File img;
+  late File baseImg;
+  Uint8List? activeImg;
 
   @override
   void initState() {
@@ -32,19 +74,20 @@ class _AnalyzePageState extends State<AnalyzePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    img = ModalRoute.of(context)?.settings.arguments as File;
+    baseImg = ModalRoute.of(context)?.settings.arguments as File;
+    () async => activeImg = await baseImg.readAsBytes();
     runAI(aiParadigm);
   }
 
   Future<void> runAI(String paradigm) async {
     setState(() => loading = true);
 
-    var imgBin = await img.readAsBytes();
+    var imgBin = await baseImg.readAsBytes();
     
     // For detect-then-classify, two model
     if(paradigm == "two-model") {
       // Get our model from assets to storage correctly for use
-      var model = File("${(await getApplicationDocumentsDirectory()).path}android/app/src/main/assets/box-detector.tflite");
+      var model = File("${(await getApplicationDocumentsDirectory()).path}/models/box-detector.tflite");
       if(! await model.exists()) {
       var bytes = await rootBundle.load("assets/models/box-detector.tflite");
       await model.create(recursive:true);
@@ -55,12 +98,15 @@ class _AnalyzePageState extends State<AnalyzePage> {
       var boxes = (await useModel(model, imgBin, "detector"))?["boxes"] ?? [];
 
       // Get our second-pass model correctly for use
-      model = File("${(await getApplicationDocumentsDirectory()).path}android/app/src/main/assets/classifier.tflite");
+      model = File("${(await getApplicationDocumentsDirectory()).path}/models/classifier.tflite");
       if(! await model.exists()) {
       var bytes = await rootBundle.load("assets/models/classifier.tflite");
       await model.create(recursive:true);
       await model.writeAsBytes(bytes.buffer.asUint8List());
       }
+
+      // List of box coordinates
+      List<BoxCoordinates> bcList = [];
 
       // For each box
       for (var box in boxes) {
@@ -76,20 +122,25 @@ class _AnalyzePageState extends State<AnalyzePage> {
         final top = (box["y1"] as num).round();
         final bottom = (box["y2"] as num).round();
 
+        // Add to BoxCoordinates object
+        var bc =BoxCoordinates(left, right, top, bottom);
+
         var crop = imaging.copyCrop(imObj, x:left, y:top, width:right - left, height:bottom - top);
 
         var cropped = imaging.encodePng(crop);
         var clsOuts = await useModel(model, cropped, "classifier");
         if(clsOuts != null) {
-          results.add(clsOuts["classification"]["name"]);
+          results.add(BoxPiece(clsOuts["classification"]["name"], bc));
+          bcList.add(bc);
         }
+        activeImg = await applyBoxesToImage(baseImg, bcList);
       }
     }
 
     // For detect-and-classify, one model (this is essentially the previous setup)
     else if (paradigm == "one-model") {
       // Get our model from assets to storage correctly for use
-      var model = File("${(await getApplicationDocumentsDirectory()).path}android/app/src/main/assets/class-detector.tflite");
+      var model = File("${(await getApplicationDocumentsDirectory()).path}/models/class-detector.tflite");
       if(! await model.exists()) {
       var bytes = await rootBundle.load("assets/models/class-detector.tflite");
       await model.create(recursive:true);
@@ -100,9 +151,18 @@ class _AnalyzePageState extends State<AnalyzePage> {
 
       // Add those results to our list
       if (detOuts != null) {
+        List<BoxCoordinates> bcList = [];
         for(int i = 0; i < detOuts["boxes"].length; ++i) {
-        results.add(detOuts["boxes"][i]["class"]);
+          var bc = BoxCoordinates(
+            (detOuts["boxes"][i]["x1"] as num).round(),
+            (detOuts["boxes"][i]["x2"] as num).round(),
+            (detOuts["boxes"][i]["y1"] as num).round(),
+            (detOuts["boxes"][i]["y2"] as num).round(),
+          );
+          results.add(BoxPiece(detOuts["boxes"][i]["class"], bc));
+          bcList.add(bc);
         }
+        activeImg = await applyBoxesToImage(baseImg, bcList);
       }
     }
 
@@ -160,11 +220,22 @@ class _AnalyzePageState extends State<AnalyzePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            if (activeImg != null) 
             SizedBox(
               width: 250,
               height: 250,
-              child: Image.file(
-                img,
+              child: 
+                Image.memory(
+                activeImg!,
+                fit:BoxFit.contain)
+            )
+            else
+            SizedBox(
+              width: 250,
+              height: 250,
+              child: 
+                Image.file(
+                baseImg,
                 fit:BoxFit.contain)
             ),
             if(loading) 
@@ -188,7 +259,7 @@ class _AnalyzePageState extends State<AnalyzePage> {
                     return SizedBox(
                       height: 15,
                       child: Text(
-                        results[index],
+                        results[index].className,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.indigo
