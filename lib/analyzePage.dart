@@ -9,7 +9,7 @@ import 'package:image/image.dart' as imaging;
 
 // To use detect then classify, set this to "two-model"
 // To use detect-only (for models that do both) set this to "one-model"
-const String aiParadigm = "one-model";
+const String aiParadigm = "two-model";
 
 class BoxCoordinates {
   int left;
