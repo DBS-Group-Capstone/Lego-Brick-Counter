@@ -47,6 +47,51 @@ class _UploadphotoPageState extends State<UploadphotoPage> {
           ),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text("Images"),
+          actions: <Widget> [
+            IconButton(
+              onPressed: () async {
+                // Select message based on success
+                String m ="";
+                File? fileLoc;
+                try {
+                  // Nav to page for copying from filesystem
+                  final ImagePicker ip = ImagePicker();
+                  final XFile? im = await ip.pickImage(source: ImageSource.gallery);
+
+                  var dir = await getApplicationDocumentsDirectory();
+                  String name = '${DateFormat('yyyyMMdd_hhmmss').format(DateTime.now())}.png';
+                  var fulldir = Directory('${dir.path}/images');
+                  if(! await fulldir.exists()) {
+                    fulldir.create();
+                  }
+                  if(im != null) {
+                    fileLoc = File('${fulldir.path}/$name');
+                    im.saveTo(fileLoc.path);
+                    m = "Image $name added.";
+                  }
+                  else {
+                    m = "No image selected.";
+                  }
+                }
+                catch(e) {
+                  m = "Image did not load properly.";
+                }
+                
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(m)),
+                );
+                setState(() {
+                  // Add to our list of images
+                  if(fileLoc != null) {
+                    imageList.add(fileLoc);
+                  }
+                });
+              },
+              icon: Icon(Icons.add)
+            )
+          ]
         ),
         body: Center(
           child: Text(
