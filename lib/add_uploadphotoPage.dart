@@ -141,7 +141,13 @@ class _UploadphotoPageState extends State<UploadphotoPage> {
                   }
                   if(im != null) {
                     fileLoc = File('${fulldir.path}/$name');
-                    im.saveTo(fileLoc.path);
+                    var argpng = await verifyPng(im);
+                    if (argpng != null) {
+                      argpng.saveTo(fileLoc.path);
+                    }
+                    else {
+                      throw FormatException("Bad png conversion");
+                    }
                     m = "Image $name added.";
                   }
                   else {
