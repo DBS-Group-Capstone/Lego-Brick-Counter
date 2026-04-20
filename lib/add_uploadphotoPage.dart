@@ -67,7 +67,7 @@ class _UploadphotoPageState extends State<UploadphotoPage> {
                   }
                   if(im != null) {
                     fileLoc = File('${fulldir.path}/$name');
-                    var argpng = await verifyPng(im);
+                    var argpng = await verifyPngAndRemoveEXIF(im);
                     if (argpng != null) {
                       argpng.saveTo(fileLoc.path);
                     }
@@ -141,7 +141,7 @@ class _UploadphotoPageState extends State<UploadphotoPage> {
                   }
                   if(im != null) {
                     fileLoc = File('${fulldir.path}/$name');
-                    var argpng = await verifyPng(im);
+                    var argpng = await verifyPngAndRemoveEXIF(im);
                     if (argpng != null) {
                       argpng.saveTo(fileLoc.path);
                     }

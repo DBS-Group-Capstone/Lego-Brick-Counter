@@ -45,7 +45,7 @@ class _CheckimagePageState extends State<CheckimagePage> {
               if(! await fulldir.exists()) {
                 fulldir.create();
               }
-              var argpng = await verifyPng(arg);
+              var argpng = await verifyPngAndRemoveEXIF(arg);
               if (argpng != null) {
                 argpng.saveTo(('${fulldir.path}/$name'));
               }
@@ -62,7 +62,7 @@ class _CheckimagePageState extends State<CheckimagePage> {
               if(! await fulldir.exists()) {
                 fulldir.create();
               }
-              var argpng = await verifyPng(arg);
+              var argpng = await verifyPngAndRemoveEXIF(arg);
               if (argpng != null) {
                 argpng.saveTo(('${fulldir.path}/$name'));
               }
