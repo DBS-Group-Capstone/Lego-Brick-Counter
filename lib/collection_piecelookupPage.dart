@@ -127,13 +127,13 @@ class _PiecelookupPageState extends State<PiecelookupPage> {
                     if((c == colorf || colorf == "")
                       && (t == typef || typef == "")
                       && (s == sizef || sizef == "")
-                      && brick.quantity > 0) {
+                      && brick.quantity >= 0) {
                       return Card(
                         child: ListTile(
                           // TODO: This leading: icon is a placeholder.
                           //   This should be replaced by an image of the piece once we
                           //   have our final piece list
-                          leading: Icon(Icons.square),
+                          // leading: Icon(Icons.square),
                           title: Text("${brick.color} - ${brick.type} (${brick.size})"),
                           subtitle: Text("Quantity: ${brick.quantity}"),
                           trailing: Row(
