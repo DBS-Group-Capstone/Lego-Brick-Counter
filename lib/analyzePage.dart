@@ -1,15 +1,17 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:learn/database_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:ultralytics_yolo/yolo.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as imaging;
+import 'brick.dart';
 
 // To use detect then classify, set this to "two-model"
 // To use detect-only (for models that do both) set this to "one-model"
-const String aiParadigm = "two-model";
+const String aiParadigm = "one-model";
 
 class BoxCoordinates {
   int left;
@@ -22,6 +24,8 @@ class BoxCoordinates {
 class BoxPiece {
   String className;
   BoxCoordinates coords;
+  // TODO: Utilize this with the actual found color when implemented
+  String color = "green";
   BoxPiece(this.className, this.coords);
 }
 
@@ -60,6 +64,7 @@ class AnalyzePage extends StatefulWidget {
 class _AnalyzePageState extends State<AnalyzePage> {
   YOLO? yolo;
   List<BoxPiece> results = [];
+  List<Brick>? finds;
   bool loading = false;
   bool empty = true;
   late File baseImg;
@@ -77,6 +82,75 @@ class _AnalyzePageState extends State<AnalyzePage> {
     baseImg = ModalRoute.of(context)?.settings.arguments as File;
     () async => activeImg = await baseImg.readAsBytes();
     runAI(aiParadigm);
+  }
+  // Populates the list of finds
+  // This should not pop if there are no finds because the user will want to
+  //   see the prompt saying nothing was identified.
+  void populateFinds() {
+    if(results.isNotEmpty && finds == null) {
+      List<Brick> f = [];
+      for (var bp in results) {
+        var b = Brick.fromStrings(bp.className, bp.color);
+        if (b != null) {
+          f.add(b);
+        }
+      }
+      if (f.isNotEmpty) {
+        finds = f;
+      }
+    }
+  }
+
+  // Updates the count on the modifiable list of finds and resets state
+  // I'm thinking this should not disappear if it goes to zero; too easy
+  //   to accidentally delete pieces while modifying heavily here.
+  void updateFindCount(int index, int amount) {
+    return setState( () {
+        if (finds != null) {
+          if (index < finds!.length) {
+            var c = finds![index].quantity + amount;
+            if (c >= 0) {
+              finds![index].quantity = c;
+            }
+          }
+        }
+      }
+    );
+  }
+  // Saves find to database, if that's the last find, leave page.
+  void saveFind(int index) async {
+    if (finds != null) {
+      if (index < finds!.length) {
+        if (finds![index].quantity < 1) {
+          finds!.removeAt(index);
+          return;
+        }
+        else {
+          await DatabaseHelper.instance.insertBrickAccumulate(finds![index]);
+          finds!.removeAt(index);
+        }
+      }
+      if(finds!.isEmpty) {
+        if (!mounted) return;
+        Navigator.of(context).pop();
+      }
+    }
+    setState(() {});
+  }
+  // Removes find from list; if no more finds, leave page
+  void removeFind(int index) {
+    return setState( () {
+        if (finds != null) {
+          if (index < finds!.length) {
+            finds!.removeAt(index);
+          }
+          if(finds!.isEmpty) {
+            if (!mounted) return;
+            Navigator.of(context).pop();
+          }
+        }
+      }
+    );
   }
 
   Future<void> runAI(String paradigm) async {
@@ -133,6 +207,7 @@ class _AnalyzePageState extends State<AnalyzePage> {
           results.add(BoxPiece(clsOuts["classification"]["name"], bc));
           bcList.add(bc);
         }
+        populateFinds();
         activeImg = await applyBoxesToImage(baseImg, bcList);
       }
     }
@@ -162,6 +237,7 @@ class _AnalyzePageState extends State<AnalyzePage> {
           results.add(BoxPiece(detOuts["boxes"][i]["class"], bc));
           bcList.add(bc);
         }
+        populateFinds();
         activeImg = await applyBoxesToImage(baseImg, bcList);
       }
     }
@@ -250,25 +326,30 @@ class _AnalyzePageState extends State<AnalyzePage> {
                   )
                 )
               )
-            else
+            else if (!empty && finds != null)
               Expanded(
                 child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: results.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      height: 15,
-                      child: Text(
-                        results[index].className,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.indigo
-                        )
-                        )
-                      );
-                  }
-                )
-              )
+                  itemCount: finds!.length,
+                  itemBuilder: (context, index) {
+                    final brick = finds![index];
+                    return Card(
+                      child: ListTile(
+                        title: Text("${brick.color} - ${brick.type} (${brick.size})"),
+                        subtitle: Text("Quantity: ${brick.quantity}"),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(icon: Icon(Icons.remove), onPressed: () => updateFindCount(index, -1)),
+                            IconButton(icon: Icon(Icons.add), onPressed: () => updateFindCount(index, 1)),
+                            IconButton(icon: Icon(Icons.save), onPressed: () => saveFind(index)),
+                            IconButton(icon: Icon(Icons.delete, color: Colors.red), onPressed: () => removeFind(index)),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
           ]
         )
       )
