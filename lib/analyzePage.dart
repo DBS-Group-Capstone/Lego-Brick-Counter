@@ -159,7 +159,7 @@ class _AnalyzePageState extends State<AnalyzePage> {
     var imgBin = await baseImg.readAsBytes();
     
     // For detect-then-classify, two model
-    if(paradigm == "two-model") {
+    if(paradigm == "one-model") {
       // Get our model from assets to storage correctly for use
       var model = File("${(await getApplicationDocumentsDirectory()).path}/models/box-detector.tflite");
       if(! await model.exists()) {
