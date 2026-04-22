@@ -204,9 +204,30 @@ class _AnalyzePageState extends State<AnalyzePage> {
         final bottom = (box["y2"] as num).round();
 
         // Add to BoxCoordinates object
+        //   This is for the user display so should not be made sqauare
         var bc =BoxCoordinates(left, right, top, bottom);
 
-        var crop = imaging.copyCrop(imObj, x:left, y:top, width:right - left, height:bottom - top);
+        int width = right - left;
+        int height = bottom - top;
+        int diff = height - width;
+
+        int croppedLeft = left;
+        int croppedTop = top;
+        int croppedRight = right;
+        int croppedBottom = bottom;
+        
+        // Get coordinates for a square
+        if(diff > 0) {
+          croppedLeft -= (diff/2).round();
+          croppedRight = height + croppedLeft;
+        }
+        else {
+          croppedTop -= -(diff/2).round();
+          croppedBottom = width + croppedTop;
+        }
+
+        // Crop that square
+        var crop = imaging.copyCrop(imObj, x:croppedRight, y:croppedTop, width:croppedRight - croppedLeft, height:croppedBottom - croppedTop);
 
         var cropped = imaging.encodePng(crop);
         var clsOuts = await useModel(model, cropped, "classifier");
