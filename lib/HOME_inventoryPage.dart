@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:learn/database_helper.dart';
 import 'package:learn/brick.dart';
 
-class PiecelookupPage extends StatefulWidget {
-  const PiecelookupPage({super.key});
+class InventoryPage extends StatefulWidget {
+  const InventoryPage({super.key});
 
 
   @override
-  State<PiecelookupPage> createState() => _PiecelookupPageState();
+  State<InventoryPage> createState() => _InventoryPageState();
 }
 
 
-class _PiecelookupPageState extends State<PiecelookupPage> {
+class _InventoryPageState extends State<InventoryPage> {
   List<Brick> bricks = [];
   String colorf = "";
   String typef = "";
@@ -62,7 +62,13 @@ class _PiecelookupPageState extends State<PiecelookupPage> {
           icon: Icon(Icons.arrow_back)
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Piece Lookup"),
+        title: Text("Inventory"),
+        actions: <Widget> [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => Navigator.of(context).pushNamed("/addpieces")
+          )
+        ]
       ),
       body: Center(
         child: Column(

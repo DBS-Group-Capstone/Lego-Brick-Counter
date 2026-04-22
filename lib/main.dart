@@ -1,30 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:learn/HOME_addPage.dart';
-import 'package:learn/HOME_collectionPage.dart';
-import 'package:learn/HOME_otherPage.dart';
-import 'package:learn/add_addsetPage.dart';
-import 'package:learn/add_takephotoPage.dart';
-import 'package:learn/add_uploadphotoPage.dart';
-import 'package:learn/collection_mypiecesPage.dart';
-import 'package:learn/collection_piecelookupPage.dart';
-import 'package:learn/collection_setlookupPage.dart';
-import 'package:learn/collection_setmatchingPage.dart';
-import 'package:learn/other_aboutPage.dart';
-import 'package:learn/other_helpPage.dart';
-import 'package:learn/other_legalPage.dart';
-import 'package:learn/other_settingsPage.dart';
+import 'package:learn/HOMEPage.dart';
+import 'package:learn/HOME_takephotoPage.dart';
+import 'package:learn/HOME_imagesPage.dart';
+import 'package:learn/HOME_inventoryPage.dart';
+import 'package:learn/settings_aboutPage.dart';
+import 'package:learn/settings_helpPage.dart';
+import 'package:learn/settings_legalPage.dart';
+import 'package:learn/HOME_settingsPage.dart';
 import 'package:learn/theme_provider.dart';
 import 'package:learn/dark_theme.dart';
 import 'package:learn/light_theme.dart';
 
-import 'data_page.dart';
+import 'inventory_addpiecesPage.dart';
 import 'dart:io';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:learn/camera_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:learn/takephoto_checkimagePage.dart';
-import 'package:learn/uploadphoto_viewimagePage.dart';
-import 'package:learn/analyzePage.dart';
+import 'package:learn/takephoto_checkphotoPage.dart';
+import 'package:learn/images_viewimagePage.dart';
+import 'package:learn/VARIOUS_analyzePage.dart';
 
 
 void main() async{
@@ -65,26 +59,20 @@ class MyApp extends StatelessWidget {
           darkTheme: AppDarkTheme.theme,
           themeMode: themeProvider.themeMode,
 
-          home: const CollectionPage(),
+          home: const HOMEPage(),
           routes: {
-          '/collection' : (_) => CollectionPage(),
-          '/add' : (_) => AddPage(),
-          '/other' : (_) => OtherPage(),
+          '/HOME' : (_) => HOMEPage(),
 
-          '/addset' : (_) => AddsetPage(),
-          '/takephoto' : (_) => TakephotoPage(),
-          '/uploadphoto' : (_) => UploadphotoPage(),
-          '/piecelookup' : (_) => PiecelookupPage(),
-          '/mypieces' : (_) => MypiecesPage(),
-          '/setlookup' : (_) => SetlookupPage(),
-          '/setmatching' : (_) => SetmatchingPage(),
+          '/takephoto' : (_) => TakePhotoPage(),
+          '/images' : (_) => ImagesPage(),
+          '/inventory' : (_) => InventoryPage(),
           '/about' : (_) => AboutPage(),
           '/help' : (_) => HelpPage(),
           '/legal' : (_) => LegalPage(),
           '/settings' : (_) => SettingsPage(),
-          '/data' : (_) => DataPage(),
-          '/checkimage' : (_) => CheckimagePage(),
-          '/viewimage' : (_) => ViewimagePage(),
+          '/addpieces' : (_) => AddPiecesPage(),
+          '/checkphoto' : (_) => CheckPhotoPage(),
+          '/viewimage' : (_) => ViewImagePage(),
           '/analyze' : (_) => AnalyzePage(),
           }
         );

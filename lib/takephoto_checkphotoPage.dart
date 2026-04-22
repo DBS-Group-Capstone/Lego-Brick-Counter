@@ -8,15 +8,15 @@ import 'package:cross_file_image/cross_file_image.dart';
 
 
 
-class CheckimagePage extends StatefulWidget {
-  const CheckimagePage({super.key});
+class CheckPhotoPage extends StatefulWidget {
+  const CheckPhotoPage({super.key});
 
   @override
-  State<CheckimagePage> createState() => _CheckimagePageState();
+  State<CheckPhotoPage> createState() => _CheckPhotoPageState();
 }
 
 
-class _CheckimagePageState extends State<CheckimagePage> {
+class _CheckPhotoPageState extends State<CheckPhotoPage> {
 
 
 

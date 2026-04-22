@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'brick.dart';
 import 'database_helper.dart';
 
-class DataPage extends StatefulWidget {
-  const DataPage({super.key});
+class AddPiecesPage extends StatefulWidget {
+  const AddPiecesPage({super.key});
 
   @override
-  _DataPageState createState() => _DataPageState();
+  _AddPiecesPageState createState() => _AddPiecesPageState();
 }
 
-class _DataPageState extends State<DataPage> {
+class _AddPiecesPageState extends State<AddPiecesPage> {
   List<Brick> bricks = [];
 
   final colorController = TextEditingController();
@@ -63,7 +63,7 @@ class _DataPageState extends State<DataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("LEGO Brick Inventory")),
+      appBar: AppBar(title: Text("Add Pieces")),
       body: Column(
         children: [
           Padding(

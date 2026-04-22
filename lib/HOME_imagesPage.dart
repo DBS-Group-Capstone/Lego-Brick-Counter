@@ -5,15 +5,15 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-class UploadphotoPage extends StatefulWidget {
-  const UploadphotoPage({super.key});
+class ImagesPage extends StatefulWidget {
+  const ImagesPage({super.key});
 
 
   @override
-  State<UploadphotoPage> createState() => _UploadphotoPageState();
+  State<ImagesPage> createState() => _ImagesPageState();
 }
 
-class _UploadphotoPageState extends State<UploadphotoPage> {
+class _ImagesPageState extends State<ImagesPage> {
   List<File> imageList = [];
 
   @override

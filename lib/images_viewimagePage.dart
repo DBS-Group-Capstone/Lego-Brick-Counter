@@ -30,15 +30,15 @@ Future<bool> deleteAndVerify(String s) async {
   return true;
 }
 
-class ViewimagePage extends StatefulWidget {
-  const ViewimagePage({super.key});
+class ViewImagePage extends StatefulWidget {
+  const ViewImagePage({super.key});
 
   @override
-  State<ViewimagePage> createState() => _ViewimagePageState();
+  State<ViewImagePage> createState() => _ViewImagePageState();
 }
 
 
-class _ViewimagePageState extends State<ViewimagePage> {
+class _ViewImagePageState extends State<ViewImagePage> {
 
 
 

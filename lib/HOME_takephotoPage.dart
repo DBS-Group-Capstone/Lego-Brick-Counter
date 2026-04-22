@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:learn/camera_provider.dart';
 
-class TakephotoPage extends StatefulWidget {
-  const TakephotoPage({super.key});
+class TakePhotoPage extends StatefulWidget {
+  const TakePhotoPage({super.key});
 
   @override
-  State<TakephotoPage> createState() => _TakephotoPageState();
+  State<TakePhotoPage> createState() => _TakePhotoPageState();
 }
 
-class _TakephotoPageState extends State<TakephotoPage> {
+class _TakePhotoPageState extends State<TakePhotoPage> {
   late CameraController controller;
 
   //initialize camera
@@ -65,7 +65,7 @@ class _TakephotoPageState extends State<TakephotoPage> {
             //   the camera on. If you dispose() it, you can't rebuild it. 
             controller.takePicture().then((XFile file) async {
               controller.pausePreview();
-              await Navigator.of(context).pushNamed('/checkimage', arguments: file);
+              await Navigator.of(context).pushNamed('/checkphoto', arguments: file);
               controller.resumePreview();
             });
           }
