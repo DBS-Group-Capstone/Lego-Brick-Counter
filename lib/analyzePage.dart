@@ -11,7 +11,7 @@ import 'brick.dart';
 
 // To use detect then classify, set this to "two-model"
 // To use detect-only (for models that do both) set this to "one-model"
-const String aiParadigm = "one-model";
+const String aiParadigm = "two-model";
 
 class BoxCoordinates {
   int left;
@@ -92,11 +92,21 @@ class _AnalyzePageState extends State<AnalyzePage> {
       for (var bp in results) {
         var b = Brick.fromStrings(bp.className, bp.color);
         if (b != null) {
-          f.add(b);
+          int i = f.indexWhere(
+            (brick) => 
+              brick.type == b.type && brick.size == b.size && brick.color == b.color
+          );
+          if (i >= 0) {
+            f[i].quantity += 1;
+          } 
+          else {
+            f.add(b);
+          }
         }
       }
       if (f.isNotEmpty) {
-        finds = f;
+        // finds = f;
+        setState(() {finds = f;});
       }
     }
   }
@@ -105,17 +115,15 @@ class _AnalyzePageState extends State<AnalyzePage> {
   // I'm thinking this should not disappear if it goes to zero; too easy
   //   to accidentally delete pieces while modifying heavily here.
   void updateFindCount(int index, int amount) {
-    return setState( () {
-        if (finds != null) {
-          if (index < finds!.length) {
-            var c = finds![index].quantity + amount;
-            if (c >= 0) {
-              finds![index].quantity = c;
-            }
-          }
+    if (finds != null) {
+      if (index < finds!.length) {
+        var c = finds![index].quantity + amount;
+        if (c >= 0) {
+          finds![index].quantity = c;
         }
       }
-    );
+    }
+    setState(() {});
   }
   // Saves find to database, if that's the last find, leave page.
   void saveFind(int index) async {
@@ -139,18 +147,17 @@ class _AnalyzePageState extends State<AnalyzePage> {
   }
   // Removes find from list; if no more finds, leave page
   void removeFind(int index) {
-    return setState( () {
-        if (finds != null) {
-          if (index < finds!.length) {
-            finds!.removeAt(index);
-          }
-          if(finds!.isEmpty) {
-            if (!mounted) return;
-            Navigator.of(context).pop();
-          }
-        }
+    if (finds != null) {
+      if (index < finds!.length) {
+        finds!.removeAt(index);
       }
-    );
+      if(finds!.isEmpty) {
+        if (!mounted) return;
+        Navigator.of(context).pop();
+      }
+    }
+    setState(() {});
+
   }
 
   Future<void> runAI(String paradigm) async {
@@ -159,7 +166,7 @@ class _AnalyzePageState extends State<AnalyzePage> {
     var imgBin = await baseImg.readAsBytes();
     
     // For detect-then-classify, two model
-    if(paradigm == "one-model") {
+    if(paradigm == "two-model") {
       // Get our model from assets to storage correctly for use
       var model = File("${(await getApplicationDocumentsDirectory()).path}/models/box-detector.tflite");
       if(! await model.exists()) {
@@ -207,9 +214,9 @@ class _AnalyzePageState extends State<AnalyzePage> {
           results.add(BoxPiece(clsOuts["classification"]["name"], bc));
           bcList.add(bc);
         }
+      }
         populateFinds();
         activeImg = await applyBoxesToImage(baseImg, bcList);
-      }
     }
 
     // For detect-and-classify, one model (this is essentially the previous setup)
@@ -223,7 +230,6 @@ class _AnalyzePageState extends State<AnalyzePage> {
       }
       // Get results
       var detOuts = await useModel(model, imgBin, "detector");
-
       // Add those results to our list
       if (detOuts != null) {
         List<BoxCoordinates> bcList = [];
