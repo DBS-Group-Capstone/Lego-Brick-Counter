@@ -33,7 +33,7 @@ class Brick {
     );
   }
 
-  // Returns a brick with no id based on the string format we use, LDRAW-ID_TYPE(may include a subtype after another '_')_SIZE
+  // Returns a brick with no id based on the string format we use, LDRAW-ID_TYPE(may have up to 3 of these)_SIZE
   // Second arg is a string of color
   // The LDRAW id is NOT used here
   // Performs no sanity checks on the string other than the delim split; be sure it's right
@@ -50,9 +50,18 @@ class Brick {
     else if(substrs.length == 4) {
       return Brick(
         color: color,
-        // Type and subtype are merged with "_"
+        // Two types are merged with "_"
         type: "${substrs[1]}_${substrs[2]}",
         size: substrs[3],
+        quantity: count ?? 1  
+      );
+    }
+    else if(substrs.length == 5) {
+      return Brick(
+        color: color,
+        // 3 types are merged with "_"
+        type: "${substrs[1]}_${substrs[2]}_${substrs[3]}",
+        size: substrs[4],
         quantity: count ?? 1  
       );
     }
