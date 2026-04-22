@@ -36,7 +36,7 @@ class DatabaseHelper {
     final db = await instance.database;
     var q = await db.query(
       "bricks",
-      columns: ["id"],
+      columns: ["id", "quantity"],
       where: "color = ? AND size = ? AND type = ?",
       whereArgs: [brick.color, brick.size, brick.type]
     );
@@ -44,11 +44,12 @@ class DatabaseHelper {
     int id = 0;
     int count = brick.quantity;
     if(q.isNotEmpty) {
-      brick.id = (q.first["id"] as num).round();
+      id = q.first["id"] as int;
     }
     if(id > 0) {
-      count += (q.first["quantity"] as num).round();
+      count += q.first["quantity"] as int;
       brick.quantity = count;
+      brick.id = id;
       return await updateBrick(brick);
     }
     else if(brick.quantity < 1) {
