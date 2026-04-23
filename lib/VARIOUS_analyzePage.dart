@@ -24,9 +24,8 @@ class BoxCoordinates {
 class BoxPiece {
   String className;
   BoxCoordinates coords;
-  // TODO: Utilize this with the actual found color when implemented
-  String color = "green";
-  BoxPiece(this.className, this.coords);
+  String color;
+  BoxPiece(this.className, this.coords, this.color);
 }
 
 // Draws red boxes upon an image
@@ -111,6 +110,46 @@ class _AnalyzePageState extends State<AnalyzePage> {
     }
   }
 
+  String findColor(imaging.Pixel img) {
+    num r = img.r;
+    num g = img.g;
+    num b = img.b;
+
+    // Get average pixel 
+
+    
+    // Output based on average values
+    if(r > 150 && g > 150 && b > 150) {
+      return "White";
+    }
+    if(r < 30 && g < 30 && b < 30) {
+      return "Black";
+    }
+    if(g > r * 1.1 && g > b * 1.1) {
+      return "Green";
+    }
+    if(r > g * 1.1 && r > b * 1.1) {
+      return "Red";
+    }
+    if(b > g * 1.1 && b > r * 1.1) {
+      return "Blue";
+    }
+    var avg = r + g + b / 3;
+    if((r - avg).abs() < 20 && (g - avg).abs() < 20 &&( b - avg).abs() < 20) {
+      return "Gray";
+    }
+    if(r > avg && g > avg && b <= avg) {
+      return "Yellow";
+    }
+    if(g > avg && b > avg && r <= avg) {
+      return "Cyan";
+    }
+    if(r > avg && b > avg && g <= avg) {
+      return "Purple";
+    }
+    return "Other";
+  }
+
   // Updates the count on the modifiable list of finds and resets state
   // I'm thinking this should not disappear if it goes to zero; too easy
   //   to accidentally delete pieces while modifying heavily here.
@@ -162,6 +201,9 @@ class _AnalyzePageState extends State<AnalyzePage> {
 
   Future<void> runAI(String paradigm) async {
     setState(() => loading = true);
+
+    // This is to give the page time to fully load; it gets choppy when the AI runs
+    await Future.delayed(Duration(milliseconds: 750));
 
     var imgBin = await baseImg.readAsBytes();
     
@@ -230,9 +272,10 @@ class _AnalyzePageState extends State<AnalyzePage> {
         var crop = imaging.copyCrop(imObj, x:croppedRight, y:croppedTop, width:croppedRight - croppedLeft, height:croppedBottom - croppedTop);
 
         var cropped = imaging.encodePng(crop);
+        var color = findColor(crop.getPixel((croppedRight - croppedLeft / 2).round(), (croppedRight - croppedLeft).round()));
         var clsOuts = await useModel(model, cropped, "classifier");
         if(clsOuts != null) {
-          results.add(BoxPiece(clsOuts["classification"]["name"], bc));
+          results.add(BoxPiece(clsOuts["classification"]["name"], bc, color));
           bcList.add(bc);
         }
       }
@@ -261,7 +304,14 @@ class _AnalyzePageState extends State<AnalyzePage> {
             (detOuts["boxes"][i]["y1"] as num).round(),
             (detOuts["boxes"][i]["y2"] as num).round(),
           );
-          results.add(BoxPiece(detOuts["boxes"][i]["class"], bc));
+
+          // Crop bounding box to get color
+          final imObj = imaging.decodeImage(imgBin);
+          String color = "";
+          if(imObj != null) {
+            color = findColor(imObj.getPixel((bc.right - bc.left / 2).round(), (bc.bottom - bc.top / 2).round()));
+          }
+          results.add(BoxPiece(detOuts["boxes"][i]["class"], bc, color));
           bcList.add(bc);
         }
         populateFinds();
@@ -342,7 +392,9 @@ class _AnalyzePageState extends State<AnalyzePage> {
                 fit:BoxFit.contain)
             ),
             if(loading) 
-              CircularProgressIndicator()
+              Expanded(
+                child: Center(child: CircularProgressIndicator())
+                )
             else if(empty && !loading)
               Center(
                 child: Text(
