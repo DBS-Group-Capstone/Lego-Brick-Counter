@@ -9,7 +9,7 @@ class LegalPage extends StatefulWidget {
 }
 
 class _LegalPageState extends State<LegalPage> {
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -22,12 +22,12 @@ class _LegalPageState extends State<LegalPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Legal"),
       ),
-      body: Center(
+      body: Container(
+        padding:EdgeInsets.all(15),
         child: Text(
-          '(To be implemented)',
+          "Copyright 2026 DBS Group\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE",
           style: TextStyle(
-            color: Colors.red,
-            fontSize: 30
+            fontSize: 15
           )
         )
       )

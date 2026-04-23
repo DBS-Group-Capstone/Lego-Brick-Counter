@@ -9,7 +9,7 @@ class HelpPage extends StatefulWidget {
 }
 
 class _HelpPageState extends State<HelpPage> {
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -22,12 +22,12 @@ class _HelpPageState extends State<HelpPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Help"),
       ),
-      body: Center(
+      body: Container(
+        padding:EdgeInsets.all(15),
         child: Text(
-          '(To be implemented)',
+          "Take a photo with the camera button or upload a photo via the images page. When viewing a photo, select the eye icon.\n\nAfter the AI runs, you will be presented with a list of pieces. Save by hitting the discard icon. Discard by hitting the delete icon.\n\nTo see where the pieces were on the image, tap the piece on any surface which is not held by a button.",
           style: TextStyle(
-            color: Colors.red,
-            fontSize: 30
+            fontSize: 15
           )
         )
       )

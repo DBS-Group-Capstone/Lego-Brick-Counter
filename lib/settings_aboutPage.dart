@@ -22,11 +22,12 @@ class _AboutPageState extends State<AboutPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("About"),
       ),
-      body: Center(
+      body: Container(
+        padding:EdgeInsets.all(15),
         child: Text(
           'Lego Brick Binder is an object detection system that identifies Lego bricks from images using YOLO26. The Legos are then logged in a local collection by type, color, and size. This project started development in 2025 by a group of students.',
           style: TextStyle(
-            fontSize: 30
+            fontSize: 15
           )
         )
       )
