@@ -272,7 +272,7 @@ class _AnalyzePageState extends State<AnalyzePage> {
         var crop = imaging.copyCrop(imObj, x:croppedRight, y:croppedTop, width:croppedRight - croppedLeft, height:croppedBottom - croppedTop);
 
         var cropped = imaging.encodePng(crop);
-        var color = findColor(crop.getPixel((croppedRight - croppedLeft / 2).round(), (croppedRight - croppedLeft).round()));
+        var color = findColor(crop.getPixel((crop.width / 2).round(), (crop.height / 2).round()));
         var clsOuts = await useModel(model, cropped, "classifier");
         if(clsOuts != null) {
           results.add(BoxPiece(clsOuts["classification"]["name"], bc, color));
@@ -415,6 +415,22 @@ class _AnalyzePageState extends State<AnalyzePage> {
                       child: ListTile(
                         title: Text("${brick.color} - ${brick.type} (${brick.size})"),
                         subtitle: Text("Quantity: ${brick.quantity}"),
+                        onTap: () async {
+                          String classPostLDrawID = "${brick.type}_${brick.size}";
+                          List<BoxCoordinates> coordinates = [];
+                          for(var r in results) {
+                            var i = r.className.indexOf("_");
+                            var substr = r.className.substring(i + 1);
+                            if(r.color == brick.color && substr == classPostLDrawID) {
+                              coordinates.add(r.coords);
+                            }
+                          }
+                            var im = await applyBoxesToImage(baseImg, coordinates);
+                            if(im != null) {
+                              activeImg = im;
+                            }
+                            setState(() {});
+                        },
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
