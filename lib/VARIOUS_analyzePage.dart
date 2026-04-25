@@ -119,32 +119,32 @@ class _AnalyzePageState extends State<AnalyzePage> {
 
     
     // Output based on average values
-    if(r > 150 && g > 150 && b > 150) {
+    if(r > 180 && g > 180 && b > 180) {
       return "White";
     }
-    if(r < 30 && g < 30 && b < 30) {
+    if(r < 50 && g < 50 && b < 50) {
       return "Black";
     }
-    if(g > r * 1.1 && g > b * 1.1) {
+    if(g > r * 1.3 && g > b * 1.3) {
       return "Green";
     }
-    if(r > g * 1.1 && r > b * 1.1) {
+    if(r > g * 1.3 && r > b * 1.3) {
       return "Red";
     }
-    if(b > g * 1.1 && b > r * 1.1) {
+    if(b > g * 1.3 && b > r * 1.3) {
       return "Blue";
     }
-    var avg = r + g + b / 3;
-    if((r - avg).abs() < 20 && (g - avg).abs() < 20 &&( b - avg).abs() < 20) {
+    var avg = (r + g + b) / 3;
+    if((r - avg).abs() < 20 && (g - avg).abs() < 20 &&(b - avg).abs() < 20) {
       return "Gray";
     }
-    if(r > avg && g > avg && b <= avg) {
+    if(r > avg && g > avg && b < avg) {
       return "Yellow";
     }
-    if(g > avg && b > avg && r <= avg) {
+    if(g > avg && b > avg && r < avg) {
       return "Cyan";
     }
-    if(r > avg && b > avg && g <= avg) {
+    if(r > avg && b > avg && g < avg) {
       return "Purple";
     }
     return "Other";
