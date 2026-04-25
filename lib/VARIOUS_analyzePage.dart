@@ -269,7 +269,7 @@ class _AnalyzePageState extends State<AnalyzePage> {
         }
 
         // Crop that square
-        var crop = imaging.copyCrop(imObj, x:croppedRight, y:croppedTop, width:croppedRight - croppedLeft, height:croppedBottom - croppedTop);
+        var crop = imaging.copyCrop(imObj, x:croppedLeft, y:croppedTop, width:croppedRight - croppedLeft, height:croppedBottom - croppedTop);
 
         var cropped = imaging.encodePng(crop);
         var color = findColor(crop.getPixel((crop.width / 2).round(), (crop.height / 2).round()));
