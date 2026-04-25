@@ -25,7 +25,7 @@ class _HelpPageState extends State<HelpPage> {
       body: Container(
         padding:EdgeInsets.all(15),
         child: Text(
-          "Take a photo with the camera button or upload a photo via the images page. When viewing a photo, select the eye icon.\n\nAfter the AI runs, you will be presented with a list of pieces. Save by hitting the discard icon. Discard by hitting the delete icon.\n\nTo see where the pieces were on the image, tap the piece on any surface which is not held by a button.",
+          "Take a photo with the camera button or upload a photo via the images page. When viewing a photo, select the eye icon.\n\nAfter the AI runs, you will be presented with a list of pieces. Save to the database by hitting the disk icon. Discard by hitting the delete icon.\n\nTo see where the pieces were on the image, tap the piece on any surface which is not held by a button.",
           style: TextStyle(
             fontSize: 15
           )

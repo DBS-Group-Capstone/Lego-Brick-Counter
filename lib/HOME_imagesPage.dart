@@ -5,6 +5,9 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+// Disables gallery access. Make this false when not demo mode.
+const bool demoMode = false;
+
 class ImagesPage extends StatefulWidget {
   const ImagesPage({super.key});
 
@@ -55,6 +58,12 @@ class _ImagesPageState extends State<ImagesPage> {
                 String m ="";
                 File? fileLoc;
                 try {
+                  if(demoMode) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Feature disabled during demo mode")),
+                    );
+                    return;
+                  }
                   // Nav to page for copying from filesystem
                   final ImagePicker ip = ImagePicker();
                   final XFile? im = await ip.pickImage(source: ImageSource.gallery);
@@ -81,7 +90,7 @@ class _ImagesPageState extends State<ImagesPage> {
                   }
                 }
                 catch(e) {
-                  m = "Image did not load properly.";
+                    m = "Image did not load properly.";
                 }
                 
                 if (!context.mounted) return;
@@ -130,6 +139,12 @@ class _ImagesPageState extends State<ImagesPage> {
                 File? fileLoc;
                 try {
                   // Nav to page for copying from filesystem
+                  if(demoMode) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Feature disabled during demo mode")),
+                    );
+                    return;
+                  }
                   final ImagePicker ip = ImagePicker();
                   final XFile? im = await ip.pickImage(source: ImageSource.gallery);
 
