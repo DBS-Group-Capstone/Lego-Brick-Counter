@@ -7,8 +7,12 @@ class HOMEPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Brick Binder"),
+        title: Text(
+          "Brick Binder",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       persistentFooterButtons: [
         Center (
@@ -31,8 +35,8 @@ class HOMEPage extends StatelessWidget {
         ),
       ],
       body: GridView.count(
-        childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 2),
-        crossAxisCount: 2,
+        childAspectRatio: 5/2,
+        crossAxisCount: 1,
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
         children: [
@@ -46,7 +50,7 @@ class HOMEPage extends StatelessWidget {
             child: Column(
               children: [
                 Spacer(),
-                Icon(Icons.shelves, size: 120),
+                Icon(Icons.shelves, size: 110),
                 Spacer(),
                 Text(
                   "Inventory",
@@ -67,7 +71,7 @@ class HOMEPage extends StatelessWidget {
             child: Column(
               children: [
                 Spacer(),
-                Icon(Icons.add_photo_alternate, size: 120),
+                Icon(Icons.add_photo_alternate, size: 110),
                 Spacer(),
                 Text(
                   "Images",
@@ -88,7 +92,7 @@ class HOMEPage extends StatelessWidget {
             child: Column(
               children: [
                 Spacer(),
-                Icon(Icons.settings, size: 120),
+                Icon(Icons.settings, size: 110),
                 Spacer(),
                 Text(
                   "Settings",
